@@ -115,14 +115,21 @@ const actions = {
         var val;
         var items = [];
         for (val of payload.out('array')) {
-            let item = {};
+            var item = {};
             item.sentence = val;
             console.log(item.sentence); // to show the step of pulling out financial sentences
+            if (!nlp(item.sentence).has('#Supplier')){
+                let potentialSupplier = nlp(item.sentence).match('#MaybeSupplier').out('text');
+               console.log(potentialSupplier)
+                console.log(item.sentence  + "<-- Doesn't have a known supplier \nIs " + potentialSupplier + " what you were looking for?")
+            }
             let numberText = nlp(val).match('#Money').out('text').replace('r', '')
             item.number = parseInt(numberText, 10)
             item.provider = nlp(val).match('#Supplier').toTitleCase().out()
             item.value = false // something Vuetify Tabular Data needs
             item.item = nlp(val).delete('#Supplier').delete('#Money').delete('#FinItemPhrase').delete('#Preposition').match('#Noun').toTitleCase().out()
+
+           
             items.push(item)
         }
         commit('finItems', items)
