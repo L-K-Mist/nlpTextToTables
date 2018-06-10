@@ -1,5 +1,5 @@
 <template>
-<v-layout>
+<v-flex xs10>
     <v-text-field box
       v-model="rawLog"
       name="input-7-1"
@@ -9,7 +9,9 @@
     <v-btn
       @click="submit">submit
     </v-btn>
-</v-layout>
+
+</v-flex>
+
 </template>
 
 <script>
