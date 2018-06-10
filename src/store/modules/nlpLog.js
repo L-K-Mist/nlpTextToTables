@@ -6,6 +6,8 @@ nlp.plugin({
     patterns: {
         '/R[0-9]+/': 'Money',
         '(of|worth of|worth)': 'FinItemPhrase',
+        'from #Noun': 'MaybeSupplier',
+        'from #Noun': 'MaybePaidMe'
     },
     words: {
         'blessing': 'Supplier',
