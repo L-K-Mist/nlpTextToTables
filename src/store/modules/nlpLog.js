@@ -7,7 +7,6 @@ nlp.plugin({
         '/R[0-9]+/': 'Money',
         '(of|worth of|worth)': 'FinItemPhrase',
         'from #Noun': 'MaybeSupplier',
-        'from #Noun': 'MaybePaidMe'
     },
     words: {
         'blessing': 'Supplier',
@@ -19,7 +18,8 @@ nlp.plugin({
 });
 
 const state = {
-    openActivityLog: false,
+    missingSupplier: false,
+    potentialSupplier: null,
     rawLog: null,
     finItems: [{
         value: false,
@@ -42,8 +42,11 @@ const state = {
 };
 
 const getters = {
-    openActivityLog: state => {
-        return state.openActivityLog;
+    missingSupplier: state => {
+        return state.missingSupplier;
+    },
+    potentialSupplier: state => {
+        return state.potentialSupplier;
     },
     rawLog(state) {
         return state.rawLog;
@@ -60,82 +63,95 @@ const getters = {
 };
 
 const mutations = {
-    openActivityLog: (state, payload) => {
-        state.openActivityLog = payload;
+  missingSupplier: (state, payload) => {
+      state.missingSupplier = payload;
+  },
+    potentialSupplier: (state, payload) => {
+        state.potentialSupplier = payload;
     },
-    rawLog(state, payload) {
-        // mutate state
-        state.rawLog = payload
-    },
-    finSentences(state, payload) {
-        // mutate state
-        state.finSentences = payload
-        //console.log('mutated finSentences to ', state.financialData.sentences)
-    },
-    gotFin(state, payload) {
-        // mutate state
-        console.log('gotFin was: ', state.gotFin)
-        state.gotFin = payload
-        console.log('gotFin is now: ', state.gotFin)
-    },
-    finItems(state, payload) {
-        state.finItems = payload
-    },
+  rawLog(state, payload) {
+    // mutate state
+    state.rawLog = payload;
+  },
+  finSentences(state, payload) {
+    // mutate state
+    state.finSentences = payload;
+    //console.log('mutated finSentences to ', state.financialData.sentences)
+  },
+  gotFin(state, payload) {
+    // mutate state
+    console.log("gotFin was: ", state.gotFin);
+    state.gotFin = payload;
+    console.log("gotFin is now: ", state.gotFin);
+  },
+  finItems(state, payload) {
+    state.finItems = payload;
+  }
 };
 
 const actions = {
-    // Dialogue actions
-    openActivityLog: ({
-        commit
-    }, payload) => {
-        commit('openActivityLog', payload);
-    },
-    newRawLog({
-        commit,
-        dispatch
-    }, payload) {
-        commit('rawLog', payload)
-        dispatch('finSentences', payload)
-    },
-    finSentences({
-        commit,
-        dispatch
-    }, payload) {
-        var financialSentences = nlp(payload).sentences().if('#Money')
-        commit('finSentences', financialSentences.data())
-        console.log(financialSentences.out('text'))
-        dispatch('finData', financialSentences)
-    },
+  // Dialogue actions
+  openActivityLog: ({ commit }, payload) => {
+    commit("openActivityLog", payload);
+  },
+  newRawLog({ commit, dispatch }, payload) {
+    commit("rawLog", payload);
+    dispatch("finSentences", payload);
+  },
+  finSentences({ commit, dispatch }, payload) {
+    var financialSentences = nlp(payload)
+      .sentences()
+      .if("#Money");
+    commit("finSentences", financialSentences.data());
+    console.log(financialSentences.out("text"));
+    dispatch("finSentenceEvaluate", financialSentences);
+  },
+  finSentenceEvaluate({ commit, dispatch }, payload) {
+    // commit('finSentences', )
+    var val;
+    var items = [];
+    for (val of payload.out("array")) {
+      var item = {};
+      item.sentence = val;
+      if (!nlp(item.sentence).has("#Supplier")) {
+        dispatch("missingSupplier", item.sentence);
+      } else {
+          let numberText = nlp(val)
+          .match("#Money")
+          .out("text")
+          .replace("r", "");
+        item.number = parseInt(numberText, 10);
+        item.provider = nlp(val)
+          .match("#Supplier")
+          .toTitleCase()
+          .out();
+        item.value = false; // something Vuetify Tabular Data needs
+        item.item = nlp(val)
+          .delete("#Supplier")
+          .delete("#Money")
+          .delete("#FinItemPhrase")
+          .delete("#Preposition")
+          .match("#Noun")
+          .toTitleCase()
+          .out();
+      }
 
-    finData({
-        commit,
-        dispatch
-    }, payload) {
-        // commit('finSentences', )
-        var val;
-        var items = [];
-        for (val of payload.out('array')) {
-            var item = {};
-            item.sentence = val;
-            console.log(item.sentence); // to show the step of pulling out financial sentences
-            if (!nlp(item.sentence).has('#Supplier')){
-                let potentialSupplier = nlp(item.sentence).match('#MaybeSupplier').out('text');
-               console.log(potentialSupplier)
-                console.log(item.sentence  + "<-- Doesn't have a known supplier \nIs " + potentialSupplier + " what you were looking for?")
-            }
-            let numberText = nlp(val).match('#Money').out('text').replace('r', '')
-            item.number = parseInt(numberText, 10)
-            item.provider = nlp(val).match('#Supplier').toTitleCase().out()
-            item.value = false // something Vuetify Tabular Data needs
-            item.item = nlp(val).delete('#Supplier').delete('#Money').delete('#FinItemPhrase').delete('#Preposition').match('#Noun').toTitleCase().out()
-
-           
-            items.push(item)
-        }
-        commit('finItems', items)
-        console.log(items)
-        commit('gotFin', true)
+      items.push(item);
     }
+    commit("finItems", items);
+    // console.log(items);
+    commit("gotFin", true);
+  },
+  missingSupplier({ commit, dispatch }, payload) {
+      console.log(payload); // to show the step of pulling out financial sentences
+      let potentialSupplier = nlp(payload)
+          .match("#MaybeSupplier")
+          .delete("from")
+          .out("text");
+          commit('potentialSupplier', potentialSupplier)
+      console.log(potentialSupplier);
+      commit('missingSupplier', true)
+  }
 };
 
 export default {

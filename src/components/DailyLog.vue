@@ -65,12 +65,7 @@
           </v-container>
         </v-flex>
     </v-layout> 
-    <v-layout flex align-center justify-center>
-
-    </v-layout>
-    <v-layout row>
-
-      </v-layout>
+<missing-supplier></missing-supplier>
   </v-container>
 
 </main>
@@ -79,7 +74,7 @@
 import LogInput from "@/components/DailyLog/LogInput"
 import LogOutput from "@/components/DailyLog/LogOutput";
 import FinTable from "@/components/DailyLog/FinTable"
-
+import MissingSupplier from "@/components/DailyLog/MissingSupplier"
 
 export default {
 
@@ -92,7 +87,8 @@ export default {
   components: {
     LogOutput,
     LogInput,
-    FinTable
+    FinTable,
+    MissingSupplier
   }
 };
 </script>
