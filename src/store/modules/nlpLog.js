@@ -116,6 +116,7 @@ const actions = {
       if (!nlp(item.sentence).has("#Supplier")) {
         dispatch("missingSupplier", item.sentence);
       } else {
+        dispatch('populateFinSentences', item.sentence)
           let numberText = nlp(val)
           .match("#Money")
           .out("text")
@@ -135,7 +136,6 @@ const actions = {
           .toTitleCase()
           .out();
       }
-
       items.push(item);
     }
     commit("finItems", items);
@@ -151,6 +151,9 @@ const actions = {
           commit('potentialSupplier', potentialSupplier)
       console.log(potentialSupplier);
       commit('missingSupplier', true)
+  },
+  populateFinSentences({ commit, dispatch}, payload) {
+      console.log(payload)
   }
 };
 
