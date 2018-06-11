@@ -136,7 +136,8 @@ const actions = {
           .toTitleCase()
           .out();
       }
-      items.push(item);
+      items.push(item); //TODO rather use state.finItems.push(item) <-- because I want to push to it from different actions
+      
     }
     commit("finItems", items);
     // console.log(items);
