@@ -18,7 +18,7 @@ nlp.plugin({
 });
 
 const state = {
-  missingSupplier: false,
+  missingSupplier: [null],
   potentialSupplier: null,
   rawLog: null,
   finItems: [],
@@ -58,7 +58,11 @@ const getters = {
 
 const mutations = {
   missingSupplier: (state, payload) => {
-    state.missingSupplier = payload;
+    if (state.missingSupplier[0] == null) {
+      state.missingSupplier = [payload]
+    } else {
+      state.missingSupplier.push(payload)
+    }
   },
   potentialSupplier: (state, payload) => {
     state.potentialSupplier = payload;
@@ -112,7 +116,7 @@ const actions = {
       .if("#Money");
     commit("finSentences", financialSentences.data());
     console.log(financialSentences.out("text"));
-    dispatch("finSentenceEvaluate", financialSentences);
+    dispatch("finSentenceEvaluate", financialSentences.out('array'));
   },
   finSentenceEvaluate({
     commit,
@@ -120,28 +124,34 @@ const actions = {
   }, payload) {
     // commit('finSentences', )
     var val;
-    for (val of payload.out("array")) {
+    for (val of payload) {
       var item = {};
-      item.sentence = val;
-      let numberText = nlp(val)
-        .match("#Money")
-        .out("text")
-        .replace("r", "");
-      item.number = parseInt(numberText, 10);
-      item.provider = nlp(val)
-        .match("#Supplier")
-        .toTitleCase()
-        .out();
-      item.value = false; // something Vuetify Tabular Data needs
-      item.item = nlp(val)
-        .delete("#Supplier")
-        .delete("#Money")
-        .delete("#FinItemPhrase")
-        .delete("#Preposition")
-        .match("#Noun")
-        .toTitleCase()
-        .out();
-      commit('addFinData', item); //TODO rather use state.finItems.push(item) <-- because I want to push to it from different actions
+
+      if (!nlp(val).has("#Supplier")) {
+        commit("missingSupplier", val);
+      } else {
+        item.sentence = val;
+        let numberText = nlp(val)
+          .match("#Money")
+          .out("text")
+          .replace("r", "");
+        item.number = parseInt(numberText, 10);
+        item.provider = nlp(val)
+          .match("#Supplier")
+          .toTitleCase()
+          .out();
+        item.value = false; // something Vuetify Tabular Data needs
+        item.item = nlp(val)
+          .delete("#Supplier")
+          .delete("#Money")
+          .delete("#FinItemPhrase")
+          .delete("#Preposition")
+          .match("#Noun")
+          .toTitleCase()
+          .out();
+        commit('addFinData', item); //TODO rather use state.finItems.push(item) <-- because I want to push to it from different actions
+      }
+
     }
 
 
@@ -162,12 +172,6 @@ const actions = {
     console.log(potentialSupplier);
     commit('missingSupplier', true)
   },
-  populateFinSentences({
-    commit,
-    dispatch
-  }, payload) {
-    console.log(payload)
-  }
 };
 
 export default {
