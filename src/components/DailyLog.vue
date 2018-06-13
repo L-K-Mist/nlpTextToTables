@@ -65,23 +65,22 @@
           </v-container>
         </v-flex>
     </v-layout> 
-<missing-supplier></missing-supplier>
+    <missing-supplier></missing-supplier>
   </v-container>
 
 </main>
 </template>
 <script>
-import LogInput from "@/components/DailyLog/LogInput"
+import LogInput from "@/components/DailyLog/LogInput";
 import LogOutput from "@/components/DailyLog/LogOutput";
-import FinTable from "@/components/DailyLog/FinTable"
-import MissingSupplier from "@/components/DailyLog/MissingSupplier"
+import FinTable from "@/components/DailyLog/FinTable";
+import MissingSupplier from "@/components/DailyLog/MissingSupplier";
 
 export default {
-
   computed: {
     gotFin() {
       return this.$store.getters.gotFin;
-    },
+    }
   },
 
   components: {

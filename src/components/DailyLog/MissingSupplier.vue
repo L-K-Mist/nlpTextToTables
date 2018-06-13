@@ -33,15 +33,15 @@ export default {
     },
     dialog: {
       get() {
-        console.log(
-          "length of missingSupplier array ",
-          this.$store.getters.missingSupplier.length
-        );
-        console.log(
-          "truthy for dialog " +
-            (this.$store.getters.missingSupplier[0] !== null)
-        );
-        return this.$store.getters.missingSupplier[0] !== null;
+        // console.log(
+        //   "length of missingSupplier array ",
+        //   this.$store.getters.missingSupplier.length
+        // );
+        // console.log(
+        //   "truthy for dialog " +
+        //     (this.$store.getters.missingSupplier[0] !== null)
+        // );
+        return this.$store.getters.missingSupplier[0] !== null; // Show the warning dialog if there's something substantive in the missingSupplier array.
       },
       set(dialog) {
         //this.$store.dispatch('')

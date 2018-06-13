@@ -63,6 +63,7 @@ const mutations = {
     } else {
       state.missingSupplier.push(payload)
     }
+    console.log('missingSupplier Array', state.missingSupplier)
   },
   potentialSupplier: (state, payload) => {
     state.potentialSupplier = payload;
