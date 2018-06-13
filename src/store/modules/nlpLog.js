@@ -117,7 +117,7 @@ const actions = {
       .if("#Money");
     commit("finSentences", financialSentences.data());
     console.log(financialSentences.out("text"));
-    dispatch("finSentenceEvaluate", financialSentences.out('array'));
+    dispatch("finSentenceEvaluate", financialSentences);
   },
   finSentenceEvaluate({
     commit,
@@ -125,32 +125,37 @@ const actions = {
   }, payload) {
     // commit('finSentences', )
     var val;
-    for (val of payload) {
+    var array = payload.out(array)
+    var data = payload.data()
+    for (val of data) {
       var item = {};
+      item.sentence = val.text;
+      console.log(item.sentence)
 
-      if (!nlp(val).has("#Supplier")) {
-        commit("missingSupplier", val);
+      if (!nlp(item.sentence).has("#Supplier")) {
+        console.log("missing supplier: ", item.sentence)
+        // commit("missingSupplier", val);
       } else {
-        item.sentence = val;
-        let numberText = nlp(val)
-          .match("#Money")
-          .out("text")
-          .replace("r", "");
-        item.number = parseInt(numberText, 10);
-        item.provider = nlp(val)
-          .match("#Supplier")
-          .toTitleCase()
-          .out();
-        item.value = false; // something Vuetify Tabular Data needs
-        item.item = nlp(val)
-          .delete("#Supplier")
-          .delete("#Money")
-          .delete("#FinItemPhrase")
-          .delete("#Preposition")
-          .match("#Noun")
-          .toTitleCase()
-          .out();
-        commit('addFinData', item); //TODO rather use state.finItems.push(item) <-- because I want to push to it from different actions
+        console.log("Verified Supplier: ", item.sentence)
+        // let numberText = nlp(val)
+        //   .match("#Money")
+        //   .out("text")
+        //   .replace("r", "");
+        // item.number = parseInt(numberText, 10);
+        // item.provider = nlp(val)
+        //   .match("#Supplier")
+        //   .toTitleCase()
+        //   .out();
+        // item.value = false; // something Vuetify Tabular Data needs
+        // item.item = nlp(val)
+        //   .delete("#Supplier")
+        //   .delete("#Money")
+        //   .delete("#FinItemPhrase")
+        //   .delete("#Preposition")
+        //   .match("#Noun")
+        //   .toTitleCase()
+        //   .out();
+        // commit('addFinData', item); //TODO rather use state.finItems.push(item) <-- because I want to push to it from different actions
       }
 
     }
