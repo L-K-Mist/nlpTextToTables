@@ -1,6 +1,7 @@
 import db from '@/api/pouchDB'
 import nlp from 'compromise'
 
+//TODO  split view of FinSentences into Verified and Unverified.
 
 nlp.plugin({
   patterns: {
@@ -32,10 +33,14 @@ const state = {
     "text": " Got R90.00 worth of Peas from Bluff Checkers",
     "normal": "got r90.00 worth of peas from bluff checkers"
   }],
+  suppliersEvaluated: {},
   gotFin: false,
 };
 
 const getters = {
+  suppliersEvaluated: state => {
+    return state.suppliersEvaluated;
+  },
   missingSupplier: state => {
     return state.missingSupplier;
   },
@@ -57,6 +62,10 @@ const getters = {
 };
 
 const mutations = {
+  suppliersEvaluated: (state, payload) => {
+    state.suppliersEvaluated = payload
+    console.log("suppliersEvaluated", state.suppliersEvaluated)
+  },
   missingSupplier: (state, payload) => {
     if (state.missingSupplier[0] == null) {
       state.missingSupplier = [payload]
@@ -127,16 +136,24 @@ const actions = {
     var val;
     var array = payload.out(array)
     var data = payload.data()
+    var suppliers = {
+      verified: [],
+      unverified: []
+    }
     for (val of data) {
       var item = {};
       item.sentence = val.text;
       console.log(item.sentence)
 
       if (!nlp(item.sentence).has("#Supplier")) {
-        console.log("missing supplier: ", item.sentence)
-        // commit("missingSupplier", val);
+        suppliers.verified.push(item.sentence)
+        console.log("missing supplier: ", suppliers.verified)
+
       } else {
-        console.log("Verified Supplier: ", item.sentence)
+        suppliers.unverified.push(item.sentence)
+        console.log("Verified Supplier: ", suppliers.unverified)
+
+
         // let numberText = nlp(val)
         //   .match("#Money")
         //   .out("text")
@@ -159,7 +176,7 @@ const actions = {
       }
 
     }
-
+    commit("suppliersEvaluated", suppliers)
 
     // commit("finItems", items);
     // // console.log(items);
