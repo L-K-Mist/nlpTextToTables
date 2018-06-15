@@ -48,10 +48,12 @@
       submit () {
         if (this.$refs.form.validate()) {
           // Native form submission is not yet supported
-          console.log('collected data', {
+          this.$store.dispatch('captureNewBusiness', {
             name: this.name,
             email: this.email,
+            nickName: this.nickName
           })
+          //this.$store.dispatch('triggerTest', true)
         }
       },
     }

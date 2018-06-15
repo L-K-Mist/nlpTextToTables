@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import activityLog from './modules/nlpLog'
+import pouchLayer from './modules/pouchLayer'
 
 /**Because of the code below I could actually programattically initialize the nlp plugin
  * 
@@ -20,6 +21,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    activityLog
+    activityLog,
+    pouchLayer
   }
 })

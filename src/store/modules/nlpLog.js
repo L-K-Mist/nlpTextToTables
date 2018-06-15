@@ -1,4 +1,3 @@
-import db from '@/api/pouchDB'
 import nlp from 'compromise'
 
 
@@ -155,9 +154,11 @@ const actions = {
   },
   populateFinSentences({ commit, dispatch}, payload) {
       console.log(payload)
+  },
+  triggerTest({commit, dispatch}, payload) {
+      dispatch("testRemoteDispatch", true)
   }
 };
-
 export default {
     state,
     mutations,

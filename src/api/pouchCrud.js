@@ -34,7 +34,7 @@ class Store {
 
     add(item) {
         // add new item 
-        return this.db.post(item);
+        return this.db.put(item);
     }
 
     update(item) {
