@@ -27,7 +27,6 @@ const actions = {
   },
   captureNewBusiness: async ({ commit }, payload) => {
     payload._id = "supplier_" + payload.name;
-    console.log(JSON.stringify(payload))
     await crud.create(payload);
       crud.info();
   }
