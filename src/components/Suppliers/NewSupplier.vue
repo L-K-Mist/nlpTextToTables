@@ -1,9 +1,59 @@
 <template>
-    <v-content>
-        <v-layout>
-            <v-flex>
-                <h2>New Supplier</h2>
-            </v-flex>
-        </v-layout>
-    </v-content>
+  <v-form ref="form" v-model="valid">
+    <v-text-field
+      v-model="name"
+      :rules="nameRules"
+      :counter="10"
+      label="Name"
+      required
+    ></v-text-field>
+    <v-text-field
+      v-model="nickName"
+      :rules="nameRules"
+      :counter="10"
+      label="Nick-Name"
+    ></v-text-field>    
+    <v-text-field
+      v-model="email"
+      :rules="emailRules"
+      label="E-mail"
+      required
+    ></v-text-field>
+    <v-btn
+    :disabled="!valid"
+      @click="submit"
+    >
+      submit
+    </v-btn>
+  </v-form>
 </template>
+
+<script>
+  export default {
+    data: () => ({
+      valid: false,
+      name: '',
+      nameRules: [
+        v => !!v || 'Name is required',
+        v => v.length <= 10 || 'Name must be less than 10 characters'
+      ],
+      nickName: '',
+      email: '',
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
+      ]
+    }),
+    methods: {
+      submit () {
+        if (this.$refs.form.validate()) {
+          // Native form submission is not yet supported
+          console.log('collected data', {
+            name: this.name,
+            email: this.email,
+          })
+        }
+      },
+    }
+  }
+</script>
