@@ -3,6 +3,7 @@
     <v-toolbar app>
        <v-toolbar-title>Company Data</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn :to="{name: 'Suppliers'}">Suppliers</v-btn>
     </v-toolbar>
     <v-content>
       <router-view/>

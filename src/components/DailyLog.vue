@@ -24,13 +24,10 @@
                           <p>
                             So then it's voice-to-text and text-to-spreadsheet. Woot! <emoji  emoji="fist" :size="15"></emoji><emoji  emoji="nerd_face" :size="20"></emoji>
                           </p>
-
-                         
                         </v-flex>
                       </v-layout>
                     </v-container>
                 </v-card>
-
               </v-flex>
               <v-flex xs12 md8>
                 <log-input></log-input>
