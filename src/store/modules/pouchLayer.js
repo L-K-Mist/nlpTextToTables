@@ -1,47 +1,58 @@
 import crud from '@/api/pouchDB'
 
 const state = {
-    testRemoteDispatch: false,
+  testRemoteDispatch: false,
 };
 
 const getters = {
-    testRemoteDispatch(state) {
-        return state.testRemoteDispatch;
-    },
+  testRemoteDispatch(state) {
+    return state.testRemoteDispatch;
+  },
 };
 
 const mutations = {
-    testRemoteDispatch(state, payload) {
-        // mutate state
-        console.log("testRemoteDispatch was: ", state.testRemoteDispatch);
-        state.testRemoteDispatch = payload;
-        console.log("testRemoteDispatch is now: ", state.testRemoteDispatch);
-    },
+  testRemoteDispatch(state, payload) {
+    // mutate state
+    console.log("testRemoteDispatch was: ", state.testRemoteDispatch);
+    state.testRemoteDispatch = payload;
+    console.log("testRemoteDispatch is now: ", state.testRemoteDispatch);
+  },
 };
 
 const actions = {
   // Dialogue actions
-  testRemoteDispatch: ({ commit }, payload) => {
+  testRemoteDispatch: ({
+    commit
+  }, payload) => {
     commit("testRemoteDispatch", payload);
-    
+
   },
-  captureNewSupplier: ({ dispatch }, payload) => {
+  captureNewSupplier: ({
+    dispatch
+  }, payload) => {
     payload._id = "supplier_" + payload.name
     crud.create(payload)
     crud.info()
     dispatch('fetchAllSuppliers')
   },
-  updateExistingSupplier: ({ commit }, payload) => {
-      crud.update(payload)
+  updateExistingSupplier: ({
+    commit
+  }, payload) => {
+    crud.update(payload)
   },
-  fetchAllSuppliers: ({ commit }) => {
-      console.log(crud.getAllType('supplier_'))
+  fetchAllSuppliers: ({
+    commit
+  }) => {
+    crud.getAllType('supplier_').then(result => {
+      console.log(result)
+    })
+
   }
 };
 
 export default {
-    state,
-    mutations,
-    actions,
-    getters
+  state,
+  mutations,
+  actions,
+  getters
 }

@@ -24,62 +24,65 @@ var db = new PouchDB('activityLog');
 
 
 var crud = {
-    info() {
-        db.info().then(function (info) {
-            console.log(info);
+  info() {
+    db.info().then(function (info) {
+      console.log(info);
+    });
+  },
+  getAllType(type) {
+    return db.allDocs({
+      include_docs: true,
+      startkey: type,
+      endkey: type + '\uffff'
+    }).then(result => {
+      // re-map rows to collection of items
+      return result.rows
+    });
+  },
+  getAll() {
+    // get all items from storage including details
+    return db.allDocs({
+        include_docs: true
+      })
+      .then(db => {
+        // re-map rows to collection of items
+        return db.rows.map(row => {
+          return row.doc;
         });
-    },
-    getAllType(type) {
-        return db.allDocs({
-            include_docs: true,
-            startkey: type,
-            endkey: type + '\uffff'
-        })
-    },
-    getAll() {
-        // get all items from storage including details
-        return db.allDocs({
-            include_docs: true
-        })
-            .then(db => {
-                // re-map rows to collection of items
-                return db.rows.map(row => {
-                    return row.doc;
-                });
-            });
-    },
-    read(id) {
-        // find item by id
-        return db.get(id);
-    },
-    create(item) {
-        // add or update an item depending on _id
-        return db.put(item);
-    },
-    
-    add(item) {
-        // add new item 
-        return this.db.post(item);
-    },
-    
-    update(item) {
-        // find item by id
-        return db.get(item._id)
-            .then(updatingItem => {
-                // update item
-                Object.assign(updatingItem, item); // #Research
-                return this.db.put(updatingItem);
-            });
-    },
-    
-    remove(id) {
-        // find item by id
-        return db.get(id)
-            .then(item => {
-                // remove item
-                return db.remove(item);
-            });
-    },
+      });
+  },
+  read(id) {
+    // find item by id
+    return db.get(id);
+  },
+  create(item) {
+    // add or update an item depending on _id
+    return db.put(item);
+  },
+
+  add(item) {
+    // add new item 
+    return this.db.post(item);
+  },
+
+  update(item) {
+    // find item by id
+    return db.get(item._id)
+      .then(updatingItem => {
+        // update item
+        Object.assign(updatingItem, item); // #Research
+        return this.db.put(updatingItem);
+      });
+  },
+
+  remove(id) {
+    // find item by id
+    return db.get(id)
+      .then(item => {
+        // remove item
+        return db.remove(item);
+      });
+  },
 }
 
 /**
