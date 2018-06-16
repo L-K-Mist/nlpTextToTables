@@ -25,10 +25,17 @@ const actions = {
     commit("testRemoteDispatch", payload);
     
   },
-  captureNewBusiness: async ({ commit }, payload) => {
-    payload._id = "supplier_" + payload.name;
-    await crud.create(payload);
-      crud.info();
+  captureNewSupplier: ({ dispatch }, payload) => {
+    payload._id = "supplier_" + payload.name
+    crud.create(payload)
+    crud.info()
+    dispatch('fetchAllSuppliers')
+  },
+  updateExistingSupplier: ({ commit }, payload) => {
+      crud.update(payload)
+  },
+  fetchAllSuppliers: ({ commit }) => {
+      console.log(crud.getAllType('supplier_'))
   }
 };
 

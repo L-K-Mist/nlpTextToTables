@@ -48,7 +48,7 @@
       submit () {
         if (this.$refs.form.validate()) {
           // Native form submission is not yet supported
-          this.$store.dispatch('captureNewBusiness', {
+          this.$store.dispatch('captureNewSupplier', {
             name: this.name,
             email: this.email,
             nickName: this.nickName
