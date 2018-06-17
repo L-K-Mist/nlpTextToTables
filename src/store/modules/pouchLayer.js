@@ -2,11 +2,15 @@ import crud from '@/api/pouchDB'
 
 const state = {
   testRemoteDispatch: false,
+  suppliers: []
 };
 
 const getters = {
   testRemoteDispatch(state) {
     return state.testRemoteDispatch;
+  },
+  suppliers(state) {
+    return state.suppliers;
   },
 };
 
@@ -16,6 +20,11 @@ const mutations = {
     console.log("testRemoteDispatch was: ", state.testRemoteDispatch);
     state.testRemoteDispatch = payload;
     console.log("testRemoteDispatch is now: ", state.testRemoteDispatch);
+  },
+  suppliers(state, payload) {
+    // mutate state
+    state.suppliers = payload;
+    console.log('suppliers updated', state.suppliers)
   },
 };
 
@@ -45,6 +54,7 @@ const actions = {
   }) => {
     crud.getAllType('supplier_').then(result => {
       console.log(result)
+      commit("suppliers", result)
     })
 
   }

@@ -36,8 +36,10 @@ var crud = {
       endkey: type + '\uffff'
     }).then(result => {
       // re-map rows to collection of items
-      return result.rows
-    });
+      return result.rows.map(row => { //drills down the objects in the array to pull out the data at the doc. level
+        return row.doc;
+      });
+    })
   },
   getAll() {
     // get all items from storage including details
