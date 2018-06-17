@@ -29,6 +29,38 @@ var crud = {
       console.log(info);
     });
   },
+  deleteAll() {
+    db.allDocs({
+      include_docs: true
+    }).then(allDocs => {
+      return allDocs.rows.map(row => {
+        return {
+          _id: row.id,
+          _rev: row.doc._rev,
+          _deleted: true
+        };
+      });
+    }).then(deleteDocs => {
+      return db.bulkDocs(deleteDocs);
+    });
+  },
+  deleteAllType(type) {
+    db.allDocs({
+      include_docs: true,
+      startkey: type,
+      endkey: type + '\uffff'
+    }).then(allDocs => {
+      return allDocs.rows.map(row => {
+        return {
+          _id: row.id,
+          _rev: row.doc._rev,
+          _deleted: true
+        };
+      });
+    }).then(deleteDocs => {
+      return db.bulkDocs(deleteDocs);
+    });
+  },
   getAllType(type) {
     return db.allDocs({
       include_docs: true,
@@ -86,6 +118,8 @@ var crud = {
       });
   },
 }
+
+
 
 /**
  * Use and abuse your doc IDs
