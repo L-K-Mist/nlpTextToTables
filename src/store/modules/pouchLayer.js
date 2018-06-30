@@ -1,8 +1,23 @@
 import crud from '@/api/pouchDB'
 
+
+
+
+var suppliersJSON = '[{ "name": "Bluffy Hardware Storey", "email": "ug@ers.com", "nickName": "Usual Guysy", "_id": "supplier_Bluff Hardware Store", "_rev": "1-902f6f7a7ae54976a637639c9fcab4ab" }, { "name": "Bluff Hardware Store", "email": "ug@ers.com", "nickName": "Usual Guys", "_id": "supplier_Bluff Hardware Store", "_rev": "1-902f6f7a7ae54976a637639c9fcab4ab" }, { "name": "Checkers Bluff", "email": "check@ers.com", "nickName": "Checkers", "_id": "supplier_Checkers Bluff", "_rev": "1-4f1aab0865a44bc9886f6878af3797c3" }]'
+
+
+
+var suppliersArray = JSON.parse(suppliersJSON)
+
+console.log("suppliers Array ", suppliersArray)
+
+
+
+
 const state = {
   testRemoteDispatch: false,
-  suppliers: []
+  suppliers: [],
+  supplierTags: {}
 };
 
 const getters = {
@@ -43,6 +58,7 @@ const actions = {
     crud.create(payload)
     crud.info()
     dispatch('fetchAllSuppliers')
+
     let supplierTags = {
       _id: 'supTags',
       [payload.nickName]: 'Supplier'
@@ -58,8 +74,21 @@ const actions = {
     commit
   }) => {
     crud.getAllType('supplier_').then(result => {
-      console.log(result)
+      console.log('fetchAllSuppliers', result)
       commit("suppliers", result)
+      var newWords = {}
+
+      //var words = Object.assign(newWord)
+      result.forEach(function (element) {
+        var strName = String(element.name).toLowerCase()
+        var strNick = String(element.nickName).toLowerCase()
+        newWords = Object.assign(newWords, {
+          [strName]: 'Supplier',
+          [strNick]: 'Supplier'
+        })
+      });
+      commit('supplierTags', newWords)
+      console.log("new words", newWords)
     })
 
   }

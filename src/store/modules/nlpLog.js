@@ -25,55 +25,9 @@ nlp.plugin({
 
 
 
-var suppliersJSON = '[{ "name": "Bluff Hardware Store", "email": "ug@ers.com", "nickName": "Usual Guys", "_id": "supplier_Bluff Hardware Store", "_rev": "1-902f6f7a7ae54976a637639c9fcab4ab" }, { "name": "Checkers Bluff", "email": "check@ers.com", "nickName": "Checkers", "_id": "supplier_Checkers Bluff", "_rev": "1-4f1aab0865a44bc9886f6878af3797c3" }]'
-
-var suppliersArray = JSON.parse(suppliersJSON)
-
-console.log("suppliers Array ", suppliersArray)
-
-// var suppliersObj
-// var simpleSuppliersArray = []
-// for (let supplier of suppliersArray) {
-//   simpleSuppliersArray.push(supplier.nickName)
-// }
-// console.log('simpleSuppliersArray', simpleSuppliersArray)
-
-// //var simpleSuppliersArray = ['a', 'b', 'c'];
-// var mine
-// simpleSuppliersArray.forEach(function (element) {
-//   // mine = nlp(element).tag('Supplier');
-//   words.[String(element)] = 'Supplier'
-//   // console.log('element: ', element, " tags: ", mine.out('tags'));
-
-//   tester
-
-// });
-
-
-/**
- * const object1 = {
-  a: 1,
-  b: 2,
-  c: 3
-};
-
-const object2 = Object.assign({c: 4, d: 5}, object1);
-
-console.log(object2.c, object2.d);
-// expected output: 3 5
-
- */
-
-var newWord = {
-  [suppliersArray[0]['nickName']]: 'Supplier'
-}
-console.log('newWord is:', newWord)
-
-var words = Object.assign(newWord)
-
-
 
 const state = {
+  supplierTags: {},
   missingSupplier: [null],
   potentialSupplier: null,
   rawLog: null,
@@ -93,6 +47,9 @@ const state = {
 };
 
 const getters = {
+  supplierTags: state => {
+    return state.supplierTags;
+  },
   suppliersEvaluated: state => {
     return state.suppliersEvaluated;
   },
@@ -117,6 +74,11 @@ const getters = {
 };
 
 const mutations = {
+
+  supplierTags: (state, payload) => {
+    state.supplierTags = payload
+    console.log("supplierTags", state.supplierTags)
+  },
   suppliersEvaluated: (state, payload) => {
     state.suppliersEvaluated = payload
     console.log("suppliersEvaluated", state.suppliersEvaluated)
@@ -158,7 +120,17 @@ const mutations = {
   //   }
 };
 
+
+// I need to call fetchAllSuppliers from fetchTags
 const actions = {
+  fetchTags: async ({
+    commit,
+    dispatch
+  }) => {
+    let getTags = await dispatch('')
+  },
+
+
   // Dialogue actions
   openActivityLog: ({
     commit
@@ -173,10 +145,11 @@ const actions = {
     dispatch("finSentences", payload);
   },
   finSentences({
+    state,
     commit,
     dispatch
   }, payload) {
-    var financialSentences = nlp(payload)
+    var financialSentences = nlp(payload, state.supplierTags) // state.supplierTags adds nlp #Supplier tags to known suppliers from the supplier Type in the db.
       .sentences()
       .if("#Money");
     commit("finSentences", financialSentences.data());
@@ -206,28 +179,7 @@ const actions = {
 
       } else {
         suppliers.verified.push(item.sentence)
-        // console.log("Verified Supplier: ", suppliers.unverified)
 
-
-        // let numberText = nlp(val)
-        //   .match("#Money")
-        //   .out("text")
-        //   .replace("r", "");
-        // item.number = parseInt(numberText, 10);
-        // item.provider = nlp(val)
-        //   .match("#Supplier")
-        //   .toTitleCase()
-        //   .out();
-        // item.value = false; // something Vuetify Tabular Data needs
-        // item.item = nlp(val)
-        //   .delete("#Supplier")
-        //   .delete("#Money")
-        //   .delete("#FinItemPhrase")
-        //   .delete("#Preposition")
-        //   .match("#Noun")
-        //   .toTitleCase()
-        //   .out();
-        // commit('addFinData', item); //TODO rather use state.finItems.push(item) <-- because I want to push to it from different actions
       }
 
     }

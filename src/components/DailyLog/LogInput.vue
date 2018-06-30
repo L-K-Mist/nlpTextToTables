@@ -24,6 +24,9 @@
 
 <script>
 export default {
+  created() {
+    this.$store.dispatch("fetchAllSuppliers");
+  },
   data: () => ({
     rawLog:
       "Got shoes for R70 from Mike. Bought R70 worth Cement, Lime, and Soda from usual guys. Got Sugar for R34 from PickNPay. Got Sweet Melon for R45 from Spar. Tonight, after a breakthrough year for America, our economy is growing and creating jobs at the fastest pace since 1999. Got R90.00 worth of Peas from Bluff Checkers"
