@@ -1,21 +1,77 @@
 import nlp from 'compromise'
 
-//TODO  split view of FinSentences into Verified and Unverified.
-
 nlp.plugin({
   patterns: {
     '/R[0-9]+/': 'Money',
     '(of|worth of|worth)': 'FinItemPhrase',
     'from #Noun': 'MaybeSupplier',
   },
-  words: {
-    'blessing': 'Supplier',
-    'usual guys': 'Supplier',
-    'bluff checkers': 'Supplier',
-    'china mall': 'Supplier',
-    'mike': 'Supplier'
-  }
+  words: {}
+  // db.get(id)
+
+
+
+  // words: {
+  //   'Blessing': 'Supplier',
+  //   'usual guys': 'Supplier',
+  //   'checkers': 'Supplier',
+  //   'china mall': 'Supplier',
+  //   'Mike': 'Supplier'
+  // }
 });
+
+
+
+
+
+
+var suppliersJSON = '[{ "name": "Bluff Hardware Store", "email": "ug@ers.com", "nickName": "Usual Guys", "_id": "supplier_Bluff Hardware Store", "_rev": "1-902f6f7a7ae54976a637639c9fcab4ab" }, { "name": "Checkers Bluff", "email": "check@ers.com", "nickName": "Checkers", "_id": "supplier_Checkers Bluff", "_rev": "1-4f1aab0865a44bc9886f6878af3797c3" }]'
+
+var suppliersArray = JSON.parse(suppliersJSON)
+
+console.log("suppliers Array ", suppliersArray)
+
+// var suppliersObj
+// var simpleSuppliersArray = []
+// for (let supplier of suppliersArray) {
+//   simpleSuppliersArray.push(supplier.nickName)
+// }
+// console.log('simpleSuppliersArray', simpleSuppliersArray)
+
+// //var simpleSuppliersArray = ['a', 'b', 'c'];
+// var mine
+// simpleSuppliersArray.forEach(function (element) {
+//   // mine = nlp(element).tag('Supplier');
+//   words.[String(element)] = 'Supplier'
+//   // console.log('element: ', element, " tags: ", mine.out('tags'));
+
+//   tester
+
+// });
+
+
+/**
+ * const object1 = {
+  a: 1,
+  b: 2,
+  c: 3
+};
+
+const object2 = Object.assign({c: 4, d: 5}, object1);
+
+console.log(object2.c, object2.d);
+// expected output: 3 5
+
+ */
+
+var newWord = {
+  [suppliersArray[0]['nickName']]: 'Supplier'
+}
+console.log('newWord is:', newWord)
+
+var words = Object.assign(newWord)
+
+
 
 const state = {
   missingSupplier: [null],
@@ -142,15 +198,15 @@ const actions = {
     for (val of data) {
       var item = {};
       item.sentence = val.text;
-      console.log(item.sentence)
+      // console.log(item.sentence)
 
       if (!nlp(item.sentence).has("#Supplier")) {
-        suppliers.verified.push(item.sentence)
-        console.log("missing supplier: ", suppliers.verified)
+        suppliers.unverified.push(item.sentence)
+        // console.log("missing supplier: ", suppliers.verified)
 
       } else {
-        suppliers.unverified.push(item.sentence)
-        console.log("Verified Supplier: ", suppliers.unverified)
+        suppliers.verified.push(item.sentence)
+        // console.log("Verified Supplier: ", suppliers.unverified)
 
 
         // let numberText = nlp(val)

@@ -29,33 +29,35 @@
 </template>
 
 <script>
-  export default {
-    data: () => ({
-      valid: false,
-      name: '',
-      nameRules: [
-        v => !!v || 'Name is required',
-        v => v.length <= 10 || 'Name must be less than 10 characters'
-      ],
-      nickName: '',
-      email: '',
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
-      ]
-    }),
-    methods: {
-      submit () {
-        if (this.$refs.form.validate()) {
-          // Native form submission is not yet supported
-          this.$store.dispatch('captureNewSupplier', {
-            name: this.name,
-            email: this.email,
-            nickName: this.nickName
-          })
-          //this.$store.dispatch('triggerTest', true)
-        }
-      },
+export default {
+  data: () => ({
+    valid: false,
+    name: "",
+    nameRules: [
+      v => !!v || "Name is required",
+      v => v.length <= 40 || "Name must be less than 40 characters"
+    ],
+    nickName: "",
+    email: "",
+    emailRules: [
+      v => !!v || "E-mail is required",
+      v =>
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+        "E-mail must be valid"
+    ]
+  }),
+  methods: {
+    submit() {
+      if (this.$refs.form.validate()) {
+        // Native form submission is not yet supported
+        this.$store.dispatch("captureNewSupplier", {
+          name: this.name,
+          email: this.email,
+          nickName: this.nickName
+        });
+        //this.$store.dispatch('triggerTest', true)
+      }
     }
   }
+};
 </script>

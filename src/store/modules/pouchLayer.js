@@ -24,7 +24,7 @@ const mutations = {
   suppliers(state, payload) {
     // mutate state
     state.suppliers = payload;
-    console.log('suppliers updated', state.suppliers)
+    console.log('suppliers updated', JSON.stringify(state.suppliers))
   },
 };
 
@@ -43,6 +43,11 @@ const actions = {
     crud.create(payload)
     crud.info()
     dispatch('fetchAllSuppliers')
+    let supplierTags = {
+      _id: 'supTags',
+      [payload.nickName]: 'Supplier'
+    }
+    console.log('supplierTags', supplierTags)
   },
   updateExistingSupplier: ({
     commit
